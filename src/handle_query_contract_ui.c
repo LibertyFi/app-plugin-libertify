@@ -16,6 +16,7 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
         case CLIPPER_SWAP_V5:
         case CLIPPER_SWAP_TO_WITH_PERMIT:
         case CLIPPER_SWAP_TO_WITH_PERMIT_V5:
+        case DEPOSIT:
             strlcpy(msg->title, "Send", msg->titleLength);
             break;
         case FILL_ORDER_RFQ:
@@ -138,46 +139,6 @@ static screens_t get_screen(ethQueryContractUI_t *msg,
                 return SEND_SCREEN;
             } else if (token_received_found) {
                 return WARN_SCREEN;
-            }
-        case 1:
-            if (both_tokens_found) {
-                return RECEIVE_SCREEN;
-            } else if (both_tokens_not_found) {
-                return SEND_SCREEN;
-            } else if (token_sent_found) {
-                return WARN_SCREEN;
-            } else if (token_received_found) {
-                return SEND_SCREEN;
-            }
-        case 2:
-            if (both_tokens_found) {
-                return BENEFICIARY_SCREEN;
-            } else if (both_tokens_not_found) {
-                return WARN_SCREEN;
-            } else {
-                return RECEIVE_SCREEN;
-            }
-        case 3:
-            if (both_tokens_found) {
-                return PARTIAL_FILL_SCREEN;
-            } else if (both_tokens_not_found) {
-                return RECEIVE_SCREEN;
-            } else {
-                return BENEFICIARY_SCREEN;
-            }
-        case 4:
-            if (both_tokens_found) {
-                return ERROR;
-            } else if (both_tokens_not_found) {
-                return BENEFICIARY_SCREEN;
-            } else {
-                return PARTIAL_FILL_SCREEN;
-            }
-        case 5:
-            if (both_tokens_not_found) {
-                return PARTIAL_FILL_SCREEN;
-            } else {
-                return ERROR;
             }
         default:
             return ERROR;

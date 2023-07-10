@@ -34,6 +34,11 @@ void handle_init_contract(void *parameters) {
 
     // Set `next_param` to be the first field we expect to parse.
     switch (context->selectorIndex) {
+        case DEPOSIT:
+            // Skip vault
+            context->skip = 1;
+            context->next_param = TOKEN_SENT;
+            break;
         case SWAP:
             // Skip caller, structure offset and data offset
             context->skip = 3;

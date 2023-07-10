@@ -3,15 +3,7 @@
 void handle_finalize(void *parameters) {
     ethPluginFinalize_t *msg = (ethPluginFinalize_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
-    msg->numScreens = 2;
-    if (memcmp(context->beneficiary, NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {
-        // An additional screen is required to display the `beneficiary` field.
-        msg->numScreens += 1;
-    }
-    if (context->selectorIndex == SWAP || context->selectorIndex == SWAP_V5) {
-        // An additional screen is required to display the partial fill field.
-        msg->numScreens += 1;
-    }
+    msg->numScreens = 1;
     if (!ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
         // Address is not network token (0xeee...) so we will need to look up the token in the
         // CAL.

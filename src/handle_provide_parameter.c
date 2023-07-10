@@ -357,6 +357,25 @@ static void handle_fill_order_rfq_to_with_permit_v5(ethPluginProvideParameter_t 
     }
 }
 
+static void handle_deposit(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    switch (context->next_param) {
+        case TOKEN_SENT:  // token
+            handle_token_sent(msg, context);
+            context->next_param = AMOUNT_SENT;
+            break;
+        case AMOUNT_SENT:  // assets
+            handle_amount_sent(msg, context);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
@@ -426,6 +445,10 @@ void handle_provide_parameter(void *parameters) {
             case FILL_ORDER_RFQ_V5:
             case FILL_ORDER_RFQ_TO_WITH_PERMIT_V5: {
                 handle_fill_order_rfq_to_with_permit_v5(msg, context);
+                break;
+            }
+            case DEPOSIT: {
+                handle_deposit(msg, context);
                 break;
             }
             default:

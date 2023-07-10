@@ -67,6 +67,10 @@ static const uint8_t ONE_INCH_FILL_ORDER_RFQ_TO_WITH_PERMIT_SELECTOR_V5[SELECTOR
 // fillOrderRFQ 0x3eca9c0a
 static const uint8_t ONE_INCH_FILL_ORDER_RFQ__SELECTOR_V5[SELECTOR_SIZE] = {0x3e, 0xca, 0x9c, 0x0a};
 
+// Function: deposit(address vault,address token,uint256 assets,bytes data)
+// MethodID: 0xe9c670ad
+static const uint8_t LIBERTI_DEPOSIT_SELECTOR[SELECTOR_SIZE] = {0xe9, 0xc6, 0x70, 0xad};
+
 // Array of all the different 1inch selectors.
 const uint8_t *const ONE_INCH_SELECTORS[NUM_ONE_INCH_SELECTORS] = {
     ONE_INCH_SWAP_SELECTOR,
@@ -86,6 +90,8 @@ const uint8_t *const ONE_INCH_SELECTORS[NUM_ONE_INCH_SELECTORS] = {
     ONE_INCH_CLIPPER_SWAP_TO_WITH_PERMIT_SELECTOR_V5,
     ONE_INCH_FILL_ORDER_RFQ__SELECTOR_V5,
     ONE_INCH_FILL_ORDER_RFQ_TO_WITH_PERMIT_SELECTOR_V5,
+
+    LIBERTI_DEPOSIT_SELECTOR,
 };
 
 // 1inch uses `0xeeeee` as a dummy address to represent ETH.
