@@ -6,17 +6,12 @@
             "contractName": "AggregationRouterV3",
             "selectors": {
                 "0x7c025200": {
-                    "erc20OfInterest": [
-                        "desc.srcToken",
-                        "desc.dstToken"
-                    ],
+                    "erc20OfInterest": ["desc.srcToken", "desc.dstToken"],
                     "method": "swap",
                     "plugin": "1inch"
                 },
                 "0x2e95b6c8": {
-                    "erc20OfInterest": [
-                        "srcToken"
-                    ],
+                    "erc20OfInterest": ["srcToken"],
                     "method": "unoswap",
                     "plugin": "1inch"
                 }
@@ -27,17 +22,12 @@
             "contractName": "AggregationRouterV4",
             "selectors": {
                 "0x7c025200": {
-                    "erc20OfInterest": [
-                        "desc.srcToken",
-                        "desc.dstToken"
-                    ],
+                    "erc20OfInterest": ["desc.srcToken", "desc.dstToken"],
                     "method": "swap",
                     "plugin": "1inch"
                 },
                 "0x2e95b6c8": {
-                    "erc20OfInterest": [
-                        "srcToken"
-                    ],
+                    "erc20OfInterest": ["srcToken"],
                     "method": "unoswap",
                     "plugin": "1inch"
                 },
@@ -52,9 +42,7 @@
                     "plugin": "1inch"
                 },
                 "0x2521b930": {
-                    "erc20OfInterest": [
-                        "srcToken"
-                    ],
+                    "erc20OfInterest": ["srcToken"],
                     "method": "uniswapV3SwapToWithPermit",
                     "plugin": "1inch"
                 },
@@ -80,57 +68,49 @@
             "contractName": "AggregationRouterV5",
             "selectors": {
                 "0x12aa3caf": {
-                    "erc20OfInterest": [
-                        "desc.srcToken",
-                        "desc.dstToken"
-                    ],
+                    "erc20OfInterest": ["desc.srcToken", "desc.dstToken"],
                     "method": "swap",
                     "plugin": "1inch"
                 },
                 "0x0502b1c5": {
-                    "erc20OfInterest": [
-                        "srcToken"
-                    ],
+                    "erc20OfInterest": ["srcToken"],
                     "method": "unoswap",
                     "plugin": "1inch"
                 },
                 "0x3c15fd91": {
-                    "erc20OfInterest": [
-                        "srcToken"
-                    ],
+                    "erc20OfInterest": ["srcToken"],
                     "method": "unoswapToWithPermit",
                     "plugin": "1inch"
                 },
                 "0x84bd6d29": {
-                    "erc20OfInterest": [
-                        "srcToken",
-                        "dstToken"
-                    ],
+                    "erc20OfInterest": ["srcToken", "dstToken"],
                     "method": "clipperSwap",
                     "plugin": "1inch"
                 },
                 "0xc805a666": {
-                    "erc20OfInterest": [
-                        "srcToken",
-                        "dstToken"
-                    ],
+                    "erc20OfInterest": ["srcToken", "dstToken"],
                     "method": "clipperSwapToWithPermit",
                     "plugin": "1inch"
                 },
                 "0x3eca9c0a": {
-                    "erc20OfInterest": [
-                        "order.makerAsset",
-                        "order.takerAsset"
-                    ],
+                    "erc20OfInterest": ["order.makerAsset", "order.takerAsset"],
                     "method": "fillOrderRFQ",
                     "plugin": "1inch"
                 },
                 "0x70ccbd31": {
-                    "erc20OfInterest": [
-                        "order.makerAsset",
-                        "order.takerAsset"
-                    ],
+                    "erc20OfInterest": ["order.makerAsset", "order.takerAsset"],
                     "method": "fillOrderRFQToWithPermit",
+                    "plugin": "1inch"
+                }
+            }
+        },
+        {
+            "address": "0xb19d68cc120c5139bb83e3b8c11cb4d421eea98d",
+            "contractName": "LibertiV1ProxyLedger",
+            "selectors": {
+                "0xe9c670ad": {
+                    "erc20OfInterest": ["token"],
+                    "method": "deposit",
                     "plugin": "1inch"
                 }
             }
