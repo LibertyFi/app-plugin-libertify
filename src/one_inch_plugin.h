@@ -12,7 +12,7 @@
 #define NUM_ONE_INCH_SELECTORS 18  // FIXME: 17 1inch +1 libertify
 #define SELECTOR_SIZE          4
 
-#define PLUGIN_NAME "1inch"
+#define PLUGIN_NAME "Libertify"
 
 #define TOKEN_SENT_FOUND     1
 #define TOKEN_RECEIVED_FOUND 1 << 1
