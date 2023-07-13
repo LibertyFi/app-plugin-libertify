@@ -17,6 +17,9 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
         case CLIPPER_SWAP_TO_WITH_PERMIT:
         case CLIPPER_SWAP_TO_WITH_PERMIT_V5:
         case DEPOSIT:
+        case REDEEM:
+        case DEPOSIT_ETH:
+        case REDEEM_ETH:
             strlcpy(msg->title, "Send", msg->titleLength);
             break;
         case FILL_ORDER_RFQ:
@@ -31,18 +34,29 @@ static void set_send_ui(ethQueryContractUI_t *msg, one_inch_parameters_t *contex
             return;
     }
 
-    // set network ticker (ETH, BNB, etc) if needed
-    if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+    // set generic LP symbol or network ticker (ETH, BNB, etc) if needed
+    if ((context->selectorIndex == REDEEM) || (context->selectorIndex == REDEEM_ETH)) {
+        strlcpy(context->ticker_sent, "LP", sizeof(context->ticker_sent));
+    } else if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
         strlcpy(context->ticker_sent, msg->network_ticker, sizeof(context->ticker_sent));
     }
 
     // Convert to string.
-    amountToString(context->amount_sent,
-                   INT256_LENGTH,
-                   context->decimals_sent,
-                   context->ticker_sent,
-                   msg->msg,
-                   msg->msgLength);
+    if (context->selectorIndex == DEPOSIT_ETH) {
+        amountToString(msg->pluginSharedRO->txContent->value.value,
+                       msg->pluginSharedRO->txContent->value.length,
+                       context->decimals_sent,
+                       context->ticker_sent,
+                       msg->msg,
+                       msg->msgLength);
+    } else {
+        amountToString(context->amount_sent,
+                       INT256_LENGTH,
+                       context->decimals_sent,
+                       context->ticker_sent,
+                       msg->msg,
+                       msg->msgLength);
+    }
     PRINTF("AMOUNT SENT: %s\n", msg->msg);
 }
 
@@ -140,6 +154,9 @@ static screens_t get_screen(ethQueryContractUI_t *msg,
             } else if (token_received_found) {
                 return WARN_SCREEN;
             }
+            return ERROR;
+        case 1:
+            return BENEFICIARY_SCREEN;
         default:
             return ERROR;
     }

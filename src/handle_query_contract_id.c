@@ -47,7 +47,12 @@ void handle_query_contract_id(void *parameters) {
             strlcpy(msg->version, "Fill Order RFQ To With Permit", msg->versionLength);
             break;
         case DEPOSIT:
+        case DEPOSIT_ETH:
             strlcpy(msg->version, "Deposit", msg->versionLength);
+            break;
+        case REDEEM:
+        case REDEEM_ETH:
+            strlcpy(msg->version, "Withdraw", msg->versionLength);
             break;
         default:
             PRINTF("Selector Index :%d not supported\n", context->selectorIndex);

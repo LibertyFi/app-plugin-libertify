@@ -5,7 +5,8 @@ void handle_provide_token(void *parameters) {
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
     PRINTF("1INCH plugin provide token: 0x%p, 0x%p\n", msg->item1, msg->item2);
 
-    if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent)) {
+    if (ADDRESS_IS_NETWORK_TOKEN(context->contract_address_sent) ||
+        (context->selectorIndex == DEPOSIT_ETH)) {
         sent_network_token(context);
     } else if (msg->item1 != NULL) {
         context->decimals_sent = msg->item1->token.decimals;

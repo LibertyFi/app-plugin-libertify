@@ -376,6 +376,40 @@ static void handle_deposit(ethPluginProvideParameter_t *msg, one_inch_parameters
     }
 }
 
+static void handle_redeem(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    switch (context->next_param) {
+        case AMOUNT_SENT:  // shares
+            handle_amount_sent(msg, context);
+            context->next_param = DST_RECEIVER;
+            break;
+        case DST_RECEIVER:  // receiver
+            handle_beneficiary(msg, context);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_deposit_eth(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+    switch (context->next_param) {
+        case DST_RECEIVER:  // receiver
+            handle_beneficiary(msg, context);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        default:
+            PRINTF("Param not supported\n");
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
@@ -449,6 +483,15 @@ void handle_provide_parameter(void *parameters) {
             }
             case DEPOSIT: {
                 handle_deposit(msg, context);
+                break;
+            }
+            case REDEEM:
+            case REDEEM_ETH: {
+                handle_redeem(msg, context);
+                break;
+            }
+            case DEPOSIT_ETH: {
+                handle_deposit_eth(msg, context);
                 break;
             }
             default:

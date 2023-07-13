@@ -9,7 +9,7 @@
 
 #define RUN_APPLICATION 1
 
-#define NUM_ONE_INCH_SELECTORS 18  // FIXME: 17 1inch +1 libertify
+#define NUM_ONE_INCH_SELECTORS 21  // FIXME: 17 1inch +4 libertify
 #define SELECTOR_SIZE          4
 
 #define PLUGIN_NAME "Libertify"
@@ -49,6 +49,9 @@ typedef enum {
     FILL_ORDER_RFQ_TO_WITH_PERMIT_V5,
 
     DEPOSIT,
+    REDEEM,
+    DEPOSIT_ETH,
+    REDEEM_ETH,
 } oneInchSelector_t;
 
 #define PARTIAL_FILL 1

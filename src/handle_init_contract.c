@@ -39,6 +39,15 @@ void handle_init_contract(void *parameters) {
             context->skip = 1;
             context->next_param = TOKEN_SENT;
             break;
+        case REDEEM:
+            context->next_param = AMOUNT_SENT;
+            break;
+        case DEPOSIT_ETH:
+            context->next_param = DST_RECEIVER;
+            break;
+        case REDEEM_ETH:
+            context->next_param = AMOUNT_SENT;
+            break;
         case SWAP:
             // Skip caller, structure offset and data offset
             context->skip = 3;
