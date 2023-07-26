@@ -29,7 +29,7 @@ APPVERSION_N     = 0
 APPVERSION_P     = 1
 APPVERSION       = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
-APPNAME = "1inch"
+APPNAME = "libertify"
 
 #prepare hsm generation
 ifeq ($(TARGET_NAME), TARGET_NANOS)
@@ -167,4 +167,4 @@ include $(BOLOS_SDK)/Makefile.rules
 dep/%.d: %.c Makefile
 
 listvariants:
-	@echo VARIANTS NONE 1inch
+	@echo VARIANTS NONE libertify

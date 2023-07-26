@@ -8,7 +8,7 @@
                 "0xe9c670ad": {
                     "erc20OfInterest": ["token"],
                     "method": "deposit",
-                    "plugin": "1inch"
+                    "plugin": "libertify"
                 }
             }
         },
@@ -19,7 +19,7 @@
                 "0x87515b90": {
                     "erc20OfInterest": [],
                     "method": "redeem",
-                    "plugin": "1inch"
+                    "plugin": "libertify"
                 }
             }
         },
@@ -30,7 +30,7 @@
 		"0x3b086d4d": {
                     "erc20OfInterest": [],
                     "method": "depositEth",
-                    "plugin": "1inch"
+                    "plugin": "libertify"
 		}
             }
 	},
@@ -41,10 +41,10 @@
 		"0xd24febcd": {
                     "erc20OfInterest": [],
                     "method": "redeemEth",
-                    "plugin": "1inch"
+                    "plugin": "libertify"
 		}
             }
 	}
     ],
-    "name": "1inch"
+    "name": "libertify"
 }
