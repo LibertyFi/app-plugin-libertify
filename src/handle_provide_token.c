@@ -1,4 +1,4 @@
-#include "one_inch_plugin.h"
+#include "libertify_plugin.h"
 
 void handle_provide_token(void *parameters) {
     ethPluginProvideInfo_t *msg = (ethPluginProvideInfo_t *) parameters;

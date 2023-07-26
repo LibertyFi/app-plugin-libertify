@@ -9,8 +9,8 @@
 
 #define RUN_APPLICATION 1
 
-#define NUM_ONE_INCH_SELECTORS 21  // FIXME: 17 1inch +4 libertify
-#define SELECTOR_SIZE          4
+#define NUM_LIBERTIFY_SELECTORS 4
+#define SELECTOR_SIZE           4
 
 #define PLUGIN_NAME "Libertify"
 
@@ -30,24 +30,6 @@ extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
      !memcmp(_addr, NULL_ETH_ADDRESS, ADDRESS_LENGTH))
 
 typedef enum {
-    SWAP,
-    UNOSWAP,
-    UNISWAP_V3_SWAP,
-    UNISWAP_V3_SWAP_TO,
-    UNISWAP_V3_SWAP_TO_WITH_PERMIT,
-    UNOSWAP_WITH_PERMIT,
-    CLIPPER_SWAP,
-    CLIPPER_SWAP_TO_WITH_PERMIT,
-    FILL_ORDER_RFQ,
-    FILL_ORDER_RFQ_TO_WITH_PERMIT,
-    SWAP_V5,
-    UNOSWAP_V5,
-    UNOSWAP_TO_WITH_PERMIT_V5,
-    CLIPPER_SWAP_V5,
-    CLIPPER_SWAP_TO_WITH_PERMIT_V5,
-    FILL_ORDER_RFQ_V5,
-    FILL_ORDER_RFQ_TO_WITH_PERMIT_V5,
-
     DEPOSIT,
     REDEEM,
     DEPOSIT_ETH,
@@ -55,7 +37,7 @@ typedef enum {
 } oneInchSelector_t;
 
 #define PARTIAL_FILL 1
-extern const uint8_t *const ONE_INCH_SELECTORS[NUM_ONE_INCH_SELECTORS];
+extern const uint8_t *const LIBERTIFY_SELECTORS[NUM_LIBERTIFY_SELECTORS];
 
 typedef enum {
     SEND_SCREEN,
