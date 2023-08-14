@@ -1,75 +1,174 @@
 #include "libertify_plugin.h"
 
-// Store the amount sent in the form of a string, without any ticker or decimals. These will be
-// added when displaying.
-static void handle_amount_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
-    memcpy(context->amount_sent, msg->parameter, INT256_LENGTH);
-}
-
-static void handle_beneficiary(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
-    memset(context->beneficiary, 0, sizeof(context->beneficiary));
-    memcpy(context->beneficiary,
-           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-           sizeof(context->beneficiary));
-    printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
-}
-
-static void handle_token_sent(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
-    memset(context->contract_address_sent, 0, sizeof(context->contract_address_sent));
-    memcpy(context->contract_address_sent,
-           &msg->parameter[PARAMETER_LENGTH - ADDRESS_LENGTH],
-           ADDRESS_LENGTH);
-    printf_hex_array("TOKEN SENT: ", ADDRESS_LENGTH, context->contract_address_sent);
-}
-
-static void handle_deposit(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+static void handle_deposit(ethPluginProvideParameter_t *msg, context_t *context) {
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
     switch (context->next_param) {
-        case TOKEN_SENT:  // token
-            handle_token_sent(msg, context);
-            context->next_param = AMOUNT_SENT;
+        case AMOUNT_SENT:  // amount
+            copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
+            context->next_param = TOKEN_SENT;
             break;
-        case AMOUNT_SENT:  // assets
-            handle_amount_sent(msg, context);
-            context->next_param = NONE;
+        case TOKEN_SENT:  // fromToken
+            copy_address(context->token_sent, msg->parameter, sizeof(context->token_sent));
+            context->next_param = VAULT_ADDRESS;
             break;
-        case NONE:
+        case VAULT_ADDRESS:  // toVault
+            context->next_param = VAULT_SYMBOL_OFFSET;
+            break;
+        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->go_to_offset = true;
+            context->next_param = VAULT_SYMBOL_LENGTH;
+            break;
+        case VAULT_SYMBOL_LENGTH:
+            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->next_param = VAULT_SYMBOL_VALUE;
+            break;
+        case VAULT_SYMBOL_VALUE:
+            strlcpy(context->vault_symbol,
+                    (const char *) msg->parameter,
+                    context->vault_symbol_length + 1);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        case UNEXPECTED_PARAMETER:
             break;
         default:
-            PRINTF("Param not supported\n");
+            PRINTF("Param not supported: %d\n", context->next_param);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
     }
 }
 
-static void handle_redeem(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+static void handle_deposit_eth(ethPluginProvideParameter_t *msg, context_t *context) {
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
     switch (context->next_param) {
-        case AMOUNT_SENT:  // shares
-            handle_amount_sent(msg, context);
-            context->next_param = DST_RECEIVER;
+        case VAULT_ADDRESS:  // toVault
+                             // do nothing
+            context->next_param = VAULT_SYMBOL_OFFSET;
             break;
-        case DST_RECEIVER:  // receiver
-            handle_beneficiary(msg, context);
-            context->next_param = NONE;
+        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->go_to_offset = true;
+            context->next_param = VAULT_SYMBOL_LENGTH;
             break;
-        case NONE:
+        case VAULT_SYMBOL_LENGTH:
+            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->next_param = VAULT_SYMBOL_VALUE;
+            break;
+        case VAULT_SYMBOL_VALUE:
+            strlcpy(context->vault_symbol,
+                    (const char *) msg->parameter,
+                    context->vault_symbol_length + 1);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        case UNEXPECTED_PARAMETER:
             break;
         default:
-            PRINTF("Param not supported\n");
+            PRINTF("Param not supported: %d\n", context->next_param);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
     }
 }
 
-static void handle_deposit_eth(ethPluginProvideParameter_t *msg, one_inch_parameters_t *context) {
+static void handle_withdraw(ethPluginProvideParameter_t *msg, context_t *context) {
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
     switch (context->next_param) {
-        case DST_RECEIVER:  // receiver
-            handle_beneficiary(msg, context);
-            context->next_param = NONE;
+        case AMOUNT_SENT:  // amount
+            copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
+            context->next_param = TOKEN_RECEIVED;
             break;
-        case NONE:
+        case TOKEN_RECEIVED:  // toToken
+            copy_address(context->token_received, msg->parameter, sizeof(context->token_received));
+            context->next_param = VAULT_ADDRESS;
+            break;
+        case VAULT_ADDRESS:  // fromVault
+                             // do nothing
+            context->next_param = MIN_AMOUNT_RECEIVED;
+            break;
+        case MIN_AMOUNT_RECEIVED:  // minReturnAmount
+            copy_parameter(context->amount_received,
+                           msg->parameter,
+                           sizeof(context->amount_received));
+            context->next_param = VAULT_SYMBOL_OFFSET;
+            break;
+        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->go_to_offset = true;
+            context->next_param = VAULT_SYMBOL_LENGTH;
+            break;
+        case VAULT_SYMBOL_LENGTH:
+            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->next_param = VAULT_SYMBOL_VALUE;
+            break;
+        case VAULT_SYMBOL_VALUE:
+            strlcpy(context->vault_symbol,
+                    (const char *) msg->parameter,
+                    context->vault_symbol_length + 1);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        case UNEXPECTED_PARAMETER:
             break;
         default:
-            PRINTF("Param not supported\n");
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_withdraw_eth(ethPluginProvideParameter_t *msg, context_t *context) {
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
+    switch (context->next_param) {
+        case AMOUNT_SENT:  // amount
+            copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
+            context->next_param = VAULT_ADDRESS;
+            break;
+        case VAULT_ADDRESS:  // fromVault
+            context->next_param = MIN_AMOUNT_RECEIVED;
+            break;
+        case MIN_AMOUNT_RECEIVED:  // minReturnAmount
+            copy_parameter(context->amount_received,
+                           msg->parameter,
+                           sizeof(context->amount_received));
+            context->next_param = VAULT_SYMBOL_OFFSET;
+            break;
+        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->go_to_offset = true;
+            context->next_param = VAULT_SYMBOL_LENGTH;
+            break;
+        case VAULT_SYMBOL_LENGTH:
+            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
+            context->next_param = VAULT_SYMBOL_VALUE;
+            break;
+        case VAULT_SYMBOL_VALUE:
+            strlcpy(context->vault_symbol,
+                    (const char *) msg->parameter,
+                    context->vault_symbol_length + 1);
+            context->next_param = UNEXPECTED_PARAMETER;
+            break;
+        case UNEXPECTED_PARAMETER:
+            break;
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             break;
     }
@@ -77,42 +176,33 @@ static void handle_deposit_eth(ethPluginProvideParameter_t *msg, one_inch_parame
 
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
-    one_inch_parameters_t *context = (one_inch_parameters_t *) msg->pluginContext;
-    printf_hex_array("1inch plugin provide parameter: ", PARAMETER_LENGTH, msg->parameter);
+    context_t *context = (context_t *) msg->pluginContext;
+    // We use `%.*H`: it's a utility function to print bytes. You first give
+    // the number of bytes you wish to print (in this case, `PARAMETER_LENGTH`) and then
+    // the address (here `msg->parameter`).
+    PRINTF("plugin provide parameter: offset %d\nBytes: %.*H\n",
+           msg->parameterOffset,
+           PARAMETER_LENGTH,
+           msg->parameter);
 
     msg->result = ETH_PLUGIN_RESULT_OK;
 
-    if (context->skip) {
-        // Skip this step, and don't forget to decrease skipping counter.
-        context->skip--;
-    } else {
-        if ((context->offset) && msg->parameterOffset != context->checkpoint + context->offset) {
-            PRINTF("offset: %d, checkpoint: %d, parameterOffset: %d\n",
-                   context->offset,
-                   context->checkpoint,
-                   msg->parameterOffset);
-            return;
-        }
-
-        context->offset = 0;  // Reset offset
-        switch (context->selectorIndex) {
-            case DEPOSIT: {
-                handle_deposit(msg, context);
-                break;
-            }
-            case REDEEM:
-            case REDEEM_ETH: {
-                handle_redeem(msg, context);
-                break;
-            }
-            case DEPOSIT_ETH: {
-                handle_deposit_eth(msg, context);
-                break;
-            }
-            default:
-                PRINTF("Selector Index %d not supported\n", context->selectorIndex);
-                msg->result = ETH_PLUGIN_RESULT_ERROR;
-                break;
-        }
+    switch (context->selectorIndex) {
+        case DEPOSIT:
+            handle_deposit(msg, context);
+            break;
+        case DEPOSIT_ETH:
+            handle_deposit_eth(msg, context);
+            break;
+        case WITHDRAW:
+            handle_withdraw(msg, context);
+            break;
+        case WITHDRAW_ETH:
+            handle_withdraw_eth(msg, context);
+            break;
+        default:
+            PRINTF("Selector Index not supported: %d\n", context->selectorIndex);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
     }
 }
