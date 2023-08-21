@@ -48,7 +48,7 @@ static const uint32_t LIBERTIFY_WITHDRAW_ETH_SELECTOR = 0x1c731999;
 
 // Array of all the different boilerplate selectors. Make sure this follows the same order as the
 // enum defined in `boilerplate_plugin.h`
-const uint32_t BOILERPLATE_SELECTORS[NUM_SELECTORS] = {
+const uint32_t LIBERTIFY_SELECTORS[NUM_SELECTORS] = {
     LIBERTIFY_DEPOSIT_SELECTOR,
     LIBERTIFY_DEPOSIT_ETH_SELECTOR,
     LIBERTIFY_WITHDRAW_SELECTOR,

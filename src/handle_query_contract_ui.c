@@ -37,7 +37,6 @@ static void set_send_eth_ui(ethQueryContractUI_t *msg) {
                    msg->msgLength);
 }
 
-// FIXME : same as set_send_ui ???
 static void set_withdraw_send_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Send", msg->titleLength);
 
