@@ -26,33 +26,28 @@
 
 #include "libertify_plugin.h"
 
+// 1inch uses `0xeeeee` as a dummy address to represent ETH.
+const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee};
+
 // clang-format off
 
-// Function: depositWithSymbolCheck(uint256 amountIn,address srcToken,address vaultAddr,string vaultSymbol,bytes data)
-// MethodID: 0x50806b50
-static const uint32_t LIBERTIFY_DEPOSIT_SELECTOR = 0x50806b50;
+// Function: depositWithSymbolCheck(uint256 amountIn,address srcToken,address vaultAddr,string vaultSymbol,bytes[] data)
+// MethodID: 0xaa2daba6
+static const uint32_t LIBERTIFY_PROXY_DEPOSIT_SELECTOR = 0xaa2daba6;
 
-// Function: depositEthWithSymbolCheck(address vaultAddr,string vaultSymbol,bytes[] data)
-// MethodID: 0x7a894791
-static const uint32_t LIBERTIFY_DEPOSIT_ETH_SELECTOR = 0x7a894791;
-
-// Function: withdrawWithSymbolCheck(uint256 amountIn,address ,address vaultAddr,uint256 minAmountOut,string vaultSymbol,bytes data)
-// MethodID: 0xa34a09ec
-static const uint32_t LIBERTIFY_WITHDRAW_SELECTOR = 0xa34a09ec;
-
-// Function: withdrawEthWithSymbolCheck(uint256 amountIn,address vaultAddr,uint256 minAmountOut,string vaultSymbol,bytes[] data)
-// MethodID: 0x1c731999
-static const uint32_t LIBERTIFY_WITHDRAW_ETH_SELECTOR = 0x1c731999;
+// Function: withdrawWithSymbolCheck(uint256 amountIn,address dstToken,address vaultAddr,uint256 minAmountOut,string vaultSymbol,bytes[] data)
+// MethodID: 0xa2922622
+static const uint32_t LIBERTIFY_PROXY_WITHDRAW_SELECTOR = 0xa2922622;
 
 // clang-format on
 
 // Array of all the different boilerplate selectors. Make sure this follows the same order as the
 // enum defined in `boilerplate_plugin.h`
 const uint32_t LIBERTIFY_SELECTORS[NUM_SELECTORS] = {
-    LIBERTIFY_DEPOSIT_SELECTOR,
-    LIBERTIFY_DEPOSIT_ETH_SELECTOR,
-    LIBERTIFY_WITHDRAW_SELECTOR,
-    LIBERTIFY_WITHDRAW_ETH_SELECTOR,
+    LIBERTIFY_PROXY_DEPOSIT_SELECTOR,
+    LIBERTIFY_PROXY_WITHDRAW_SELECTOR,
 };
 
 // Function to dispatch calls from the ethereum app.

@@ -5,14 +5,24 @@
 #include <string.h>
 
 // Number of selectors defined in this plugin. Should match the enum `selector_t`.
-#define NUM_SELECTORS 4
+#define NUM_SELECTORS 2
 
 // Name of the plugin.
 #define PLUGIN_NAME "Libertify"
 
+// 1inch uses `0xeeeee` as a dummy address to represent ETH in Swap.
+extern const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH];
+
+// Returns 1 if corresponding address is the 1inch address for the chain token (ETH, BNB, MATIC,
+// etc.. are 0xeeeee...).
+#define ADDRESS_IS_NETWORK_TOKEN(_addr) (!memcmp(_addr, ONE_INCH_ETH_ADDRESS, ADDRESS_LENGTH))
+
 // Enumeration of the different selectors possible.
 // Should follow the exact same order as the array declared in main.c
-typedef enum { DEPOSIT = 0, DEPOSIT_ETH, WITHDRAW, WITHDRAW_ETH } selector_t;
+typedef enum {
+    DEPOSIT = 0,
+    WITHDRAW,
+} selector_t;
 
 // Enumeration used to parse the smart contract data.
 typedef enum {

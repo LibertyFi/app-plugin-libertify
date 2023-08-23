@@ -8,54 +8,18 @@ static void handle_deposit(ethPluginProvideParameter_t *msg, context_t *context)
         context->go_to_offset = false;
     }
     switch (context->next_param) {
-        case AMOUNT_SENT:  // amount
+        case AMOUNT_SENT:  // amountIn
             copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
             context->next_param = TOKEN_SENT;
             break;
-        case TOKEN_SENT:  // fromToken
+        case TOKEN_SENT:  // srcToken
             copy_address(context->token_sent, msg->parameter, sizeof(context->token_sent));
             context->next_param = VAULT_ADDRESS;
             break;
-        case VAULT_ADDRESS:  // toVault
+        case VAULT_ADDRESS:  // vaultAddress
             context->next_param = VAULT_SYMBOL_OFFSET;
             break;
-        case VAULT_SYMBOL_OFFSET:  // symbolClaim
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
-            context->go_to_offset = true;
-            context->next_param = VAULT_SYMBOL_LENGTH;
-            break;
-        case VAULT_SYMBOL_LENGTH:
-            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
-            context->next_param = VAULT_SYMBOL_VALUE;
-            break;
-        case VAULT_SYMBOL_VALUE:
-            strlcpy(context->vault_symbol,
-                    (const char *) msg->parameter,
-                    context->vault_symbol_length + 1);
-            context->next_param = UNEXPECTED_PARAMETER;
-            break;
-        case UNEXPECTED_PARAMETER:
-            break;
-        default:
-            PRINTF("Param not supported: %d\n", context->next_param);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
-    }
-}
-
-static void handle_deposit_eth(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-    switch (context->next_param) {
-        case VAULT_ADDRESS:  // toVault
-                             // do nothing
-            context->next_param = VAULT_SYMBOL_OFFSET;
-            break;
-        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+        case VAULT_SYMBOL_OFFSET:  // vaultSymbol
             context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
             context->go_to_offset = true;
             context->next_param = VAULT_SYMBOL_LENGTH;
@@ -87,70 +51,24 @@ static void handle_withdraw(ethPluginProvideParameter_t *msg, context_t *context
         context->go_to_offset = false;
     }
     switch (context->next_param) {
-        case AMOUNT_SENT:  // amount
+        case AMOUNT_SENT:  // amountIn
             copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
             context->next_param = TOKEN_RECEIVED;
             break;
-        case TOKEN_RECEIVED:  // toToken
+        case TOKEN_RECEIVED:  // dstToken
             copy_address(context->token_received, msg->parameter, sizeof(context->token_received));
             context->next_param = VAULT_ADDRESS;
             break;
-        case VAULT_ADDRESS:  // fromVault
-                             // do nothing
+        case VAULT_ADDRESS:  // vaultAddress
             context->next_param = MIN_AMOUNT_RECEIVED;
             break;
-        case MIN_AMOUNT_RECEIVED:  // minReturnAmount
+        case MIN_AMOUNT_RECEIVED:  // minAmountOut
             copy_parameter(context->amount_received,
                            msg->parameter,
                            sizeof(context->amount_received));
             context->next_param = VAULT_SYMBOL_OFFSET;
             break;
-        case VAULT_SYMBOL_OFFSET:  // symbolClaim
-            context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
-            context->go_to_offset = true;
-            context->next_param = VAULT_SYMBOL_LENGTH;
-            break;
-        case VAULT_SYMBOL_LENGTH:
-            context->vault_symbol_length = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
-            context->next_param = VAULT_SYMBOL_VALUE;
-            break;
-        case VAULT_SYMBOL_VALUE:
-            strlcpy(context->vault_symbol,
-                    (const char *) msg->parameter,
-                    context->vault_symbol_length + 1);
-            context->next_param = UNEXPECTED_PARAMETER;
-            break;
-        case UNEXPECTED_PARAMETER:
-            break;
-        default:
-            PRINTF("Param not supported: %d\n", context->next_param);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
-    }
-}
-
-static void handle_withdraw_eth(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-    switch (context->next_param) {
-        case AMOUNT_SENT:  // amount
-            copy_parameter(context->amount_sent, msg->parameter, sizeof(context->amount_sent));
-            context->next_param = VAULT_ADDRESS;
-            break;
-        case VAULT_ADDRESS:  // fromVault
-            context->next_param = MIN_AMOUNT_RECEIVED;
-            break;
-        case MIN_AMOUNT_RECEIVED:  // minReturnAmount
-            copy_parameter(context->amount_received,
-                           msg->parameter,
-                           sizeof(context->amount_received));
-            context->next_param = VAULT_SYMBOL_OFFSET;
-            break;
-        case VAULT_SYMBOL_OFFSET:  // symbolClaim
+        case VAULT_SYMBOL_OFFSET:  // vaultSymbol
             context->offset = U2BE(msg->parameter, PARAMETER_LENGTH - 2);
             context->go_to_offset = true;
             context->next_param = VAULT_SYMBOL_LENGTH;
@@ -191,14 +109,8 @@ void handle_provide_parameter(void *parameters) {
         case DEPOSIT:
             handle_deposit(msg, context);
             break;
-        case DEPOSIT_ETH:
-            handle_deposit_eth(msg, context);
-            break;
         case WITHDRAW:
             handle_withdraw(msg, context);
-            break;
-        case WITHDRAW_ETH:
-            handle_withdraw_eth(msg, context);
             break;
         default:
             PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

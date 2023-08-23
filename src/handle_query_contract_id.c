@@ -10,10 +10,10 @@ void handle_query_contract_id(void *parameters) {
     // For the first screen, display the plugin name.
     strlcpy(msg->name, PLUGIN_NAME, msg->nameLength);
 
-    if ((context->selectorIndex == DEPOSIT) || (context->selectorIndex == DEPOSIT_ETH)) {
+    if (context->selectorIndex == DEPOSIT) {
         strlcpy(msg->version, "Deposit", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
-    } else if ((context->selectorIndex == WITHDRAW) || (context->selectorIndex == WITHDRAW_ETH)) {
+    } else if (context->selectorIndex == WITHDRAW) {
         strlcpy(msg->version, "Withdraw", msg->versionLength);
         msg->result = ETH_PLUGIN_RESULT_OK;
     } else {

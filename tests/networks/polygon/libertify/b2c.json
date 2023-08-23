@@ -1,32 +1,22 @@
 {
-    "chainId": 1,
-    "contracts": [
-        {
-            "address": "0x3899623b60552cfacd5af014e56bfadd14e116c6",
-            "contractName": "LibertiV2Proxy",
-            "selectors": {
-                "0x50806b50": {
-                    "erc20OfInterest": ["srcToken"],
-                    "method": "depositWithSymbolCheck",
-                    "plugin": "libertify"
-                },
-                "0x7a894791": {
-                    "erc20OfInterest": [],
-                    "method": "depositEthWithSymbolCheck",
-                    "plugin": "libertify"
-                },
-                "0xa34a09ec": {
-                    "erc20OfInterest": ["dstToken"],
-                    "method": "withdrawWithSymbolCheck",
-                    "plugin": "libertify"
-                },
-                "0x1c731999": {
-                    "erc20OfInterest": [],
-                    "method": "withdrawEthWithSymbolCheck",
-                    "plugin": "libertify"
-                }
-            }
+  "chainId": 1,
+  "contracts": [
+    {
+      "address": "0x9f4294dc2ba0e4569cbfa3d8a0a5f2f23385db50",
+      "contractName": "LibertiV2Proxy",
+      "selectors": {
+        "0xaa2daba6": {
+          "erc20OfInterest": ["srcToken"],
+          "method": "depositWithSymbolCheck",
+          "plugin": "libertify"
+        },
+        "0xa2922622": {
+          "erc20OfInterest": ["dstToken"],
+          "method": "withdrawWithSymbolCheck",
+          "plugin": "libertify"
         }
-    ],
-    "name": "libertify"
+      }
+    }
+  ],
+  "name": "libertify"
 }

@@ -45,11 +45,7 @@ void handle_init_contract(void *parameters) {
     switch (context->selectorIndex) {
         case DEPOSIT:
         case WITHDRAW:
-        case WITHDRAW_ETH:
             context->next_param = AMOUNT_SENT;
-            break;
-        case DEPOSIT_ETH:
-            context->next_param = VAULT_ADDRESS;
             break;
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
