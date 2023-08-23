@@ -44,12 +44,10 @@ static void set_withdraw_send_ui(ethQueryContractUI_t *msg, const context_t *con
     strlcpy(msg->title, "Send", msg->titleLength);
 
     uint8_t decimals = context->decimals;
-    const char *ticker = context->ticker;
 
     // If the token look up failed, use the default network ticker along with the default decimals.
     if (!context->token_found) {
         decimals = WEI_TO_ETHER;
-        ticker = msg->network_ticker;
     }
 
     amountToString(context->amount_sent,
