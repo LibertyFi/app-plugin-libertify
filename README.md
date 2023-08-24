@@ -32,16 +32,14 @@ Smart contracts covered by this plugin are:
 
 | Network | Version | Smart Contract                               | Note                                    |
 | ------- | ------- | -------------------------------------------- | --------------------------------------- |
-| Polygon | v1.0.0  | `0x3899623b60552CFacD5AF014E56BFadd14E116c6` | Proxy contract for operations on vaults |
+| Polygon | v1.0.0  | `0x9F4294dC2ba0E4569CBfa3D8a0A5F2F23385db50` | Proxy contract for operations on vaults |
 
 ## Functions implemented:
 
 | Function   | Selector   | Displayed Parameters                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| DepositWithSymbolCheck | 0x50806b50 | <table><tbody> <tr><td><code>uint256 amountIn</code></td></tr> <tr><td><code>address srcToken</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
-| WithdrawWithSymbolCheck | 0xa34a09ec | <table><tbody> <tr><td><code>uint256 amountIn</code></td></tr> <tr><td><code>address dstToken</code></td></tr> <tr><td><code>uint256 minAmountOut</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
-| DepositEthWithSymbolCheck | 0x7a894791 | <table><tbody> <tr><td><code>msg.value</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
-| WithdrawEthWithSymbolCheck | 0x1c731999 | <table><tbody> <tr><td><code>uint256 amountIn</code></td></tr> <tr><td><code>uint256 minAmountOut</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
+| DepositWithSymbolCheck | 0xaa2daba6 | <table><tbody> <tr><td><code>uint256 amountIn</code></td></tr> <tr><td><code>address srcToken</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
+| WithdrawWithSymbolCheck | 0xa2922622 | <table><tbody> <tr><td><code>uint256 amountIn</code></td></tr> <tr><td><code>address dstToken</code></td></tr> <tr><td><code>uint256 minAmountOut</code></td></tr> <tr><td><code>string vaultSymbol</code></td></tr> </tbody></table> |
 
 ## Build
 
