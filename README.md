@@ -1,7 +1,7 @@
 # Badges
 
-[![Code style check](https://github.com/blooo-io/app-plugin-1inch/actions/workflows/lint-workflow.yml/badge.svg)](https://github.com/blooo-io/app-plugin-1inch/actions/workflows/lint-workflow.yml)
-[![Compilation & tests](https://github.com/blooo-io/app-plugin-1inch/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/blooo-io/app-plugin-1inch/actions/workflows/ci-workflow.yml)
+[![Code style check](https://github.com/libertify/app-plugin-libertify/actions/workflows/lint-workflow.yml/badge.svg)](https://github.com/libertify/app-plugin-libertify/actions/workflows/lint-workflow.yml)
+[![Compilation & tests](https://github.com/libertify/app-plugin-libertify/actions/workflows/ci-workflow.yml/badge.svg)](https://github.com/libertify/app-plugin-libertify/actions/workflows/ci-workflow.yml)
 
 # Ledger Libertify Plugin
 
