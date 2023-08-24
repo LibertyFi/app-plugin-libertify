@@ -24,9 +24,9 @@ include $(BOLOS_SDK)/Makefile.defines
 APP_LOAD_PARAMS += --appFlags 0x800 --path "44'/60'" --path "45'" --curve secp256k1
 APP_LOAD_PARAMS += $(COMMON_LOAD_PARAMS)
 
-APPVERSION_M     = 2
+APPVERSION_M     = 1
 APPVERSION_N     = 0
-APPVERSION_P     = 1
+APPVERSION_P     = 0
 APPVERSION       = "$(APPVERSION_M).$(APPVERSION_N).$(APPVERSION_P)"
 
 APPNAME = "libertify"
@@ -35,9 +35,9 @@ APPNAME = "libertify"
 ifeq ($(TARGET_NAME), TARGET_NANOS)
 ICONNAME=icons/nanos_app_libertify.gif
 else ifeq ($(TARGET_NAME), TARGET_STAX)
-ICONNAME=icons/stax_app_1inch.gif
-DEFINES += ICONGLYPH=C_stax_1inch_64px
-DEFINES += ICONBITMAP=C_stax_1inch_64px_bitmap
+ICONNAME=icons/stax_app_libertify.gif
+DEFINES += ICONGLYPH=C_stax_libertify_64px
+DEFINES += ICONBITMAP=C_stax_libertify_64px_bitmap
 GLYPH_FILES += $(ICONNAME)
 else
 ICONNAME=icons/nanox_app_libertify.gif

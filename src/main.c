@@ -26,8 +26,32 @@
 
 #include "libertify_plugin.h"
 
-void one_inch_plugin_call(int message, void *parameters) {
-    PRINTF("Handling message %d\n", message);
+// 1inch uses `0xeeeee` as a dummy address to represent ETH.
+const uint8_t ONE_INCH_ETH_ADDRESS[ADDRESS_LENGTH] = {0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee, 0xee,
+                                                      0xee, 0xee, 0xee, 0xee, 0xee, 0xee};
+
+// clang-format off
+
+// Function: depositWithSymbolCheck(uint256 amountIn,address srcToken,address vaultAddr,string vaultSymbol,bytes[] data)
+// MethodID: 0xaa2daba6
+static const uint32_t LIBERTIFY_PROXY_DEPOSIT_SELECTOR = 0xaa2daba6;
+
+// Function: withdrawWithSymbolCheck(uint256 amountIn,address dstToken,address vaultAddr,uint256 minAmountOut,string vaultSymbol,bytes[] data)
+// MethodID: 0xa2922622
+static const uint32_t LIBERTIFY_PROXY_WITHDRAW_SELECTOR = 0xa2922622;
+
+// clang-format on
+
+// Array of all the different boilerplate selectors. Make sure this follows the same order as the
+// enum defined in `boilerplate_plugin.h`
+const uint32_t LIBERTIFY_SELECTORS[NUM_SELECTORS] = {
+    LIBERTIFY_PROXY_DEPOSIT_SELECTOR,
+    LIBERTIFY_PROXY_WITHDRAW_SELECTOR,
+};
+
+// Function to dispatch calls from the ethereum app.
+void dispatch_plugin_calls(int message, void *parameters) {
     switch (message) {
         case ETH_PLUGIN_INIT_CONTRACT:
             handle_init_contract(parameters);
@@ -63,9 +87,9 @@ void handle_query_ui_exception(unsigned int *args) {
     }
 }
 
+// Calls the ethereum app.
 void call_app_ethereum() {
     unsigned int libcall_params[5];
-
     libcall_params[0] = (unsigned int) "Ethereum";
     libcall_params[1] = 0x100;
     libcall_params[2] = RUN_APPLICATION;
@@ -88,27 +112,33 @@ void call_app_ethereum() {
     os_lib_call((unsigned int *) &libcall_params);
 }
 
+// Weird low-level black magic. No need to edit this.
 __attribute__((section(".boot"))) int main(int arg0) {
-    // exit critical section
+    // Exit critical section
     __asm volatile("cpsie i");
 
-    // ensure exception will work as planned
+    // Ensure exception will work as planned
     os_boot();
 
+    // Try catch block. Please read the docs for more information on how to use those!
     BEGIN_TRY {
         TRY {
+            // Low-level black magic.
             check_api_level(CX_COMPAT_APILEVEL);
 
+            // Check if we are called from the dashboard.
             if (!arg0) {
-                // called from dashboard, launch Ethereum app
+                // Called from dashboard, launch Ethereum app
                 call_app_ethereum();
                 return 0;
             } else {
-                // regular call from ethereum
-                unsigned int *args = (unsigned int *) arg0;
+                // Not called from dashboard: called from the ethereum app!
+                const unsigned int *args = (const unsigned int *) arg0;
 
+                // If `ETH_PLUGIN_CHECK_PRESENCE` is set, this means the caller is just trying to
+                // know whether this app exists or not. We can skip `dispatch_plugin_calls`.
                 if (args[0] != ETH_PLUGIN_CHECK_PRESENCE) {
-                    one_inch_plugin_call(args[0], (void *) args[1]);
+                    dispatch_plugin_calls(args[0], (void *) args[1]);
                 }
             }
         }
@@ -125,10 +155,12 @@ __attribute__((section(".boot"))) int main(int arg0) {
             PRINTF("Exception 0x%x caught\n", e);
         }
         FINALLY {
+            // Call `os_lib_end`, go back to the ethereum app.
             os_lib_end();
         }
     }
     END_TRY;
 
+    // Will not get reached.
     return 0;
 }

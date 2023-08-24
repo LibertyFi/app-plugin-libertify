@@ -1,50 +1,22 @@
 {
-    "chainId": 1,
-    "contracts": [
-        {
-            "address": "0xb19d68cc120c5139bb83e3b8c11cb4d421eea98d",
-            "contractName": "LibertiV1ProxyLedger",
-            "selectors": {
-                "0xe9c670ad": {
-                    "erc20OfInterest": ["token"],
-                    "method": "deposit",
-                    "plugin": "libertify"
-                }
-            }
+  "chainId": 1,
+  "contracts": [
+    {
+      "address": "0x9f4294dc2ba0e4569cbfa3d8a0a5f2f23385db50",
+      "contractName": "LibertiV2Proxy",
+      "selectors": {
+        "0xaa2daba6": {
+          "erc20OfInterest": ["srcToken"],
+          "method": "depositWithSymbolCheck",
+          "plugin": "libertify"
         },
-        {
-            "address": "0x9c80a455ecaca7025a45f5fa3b85fd6a462a447b",
-            "contractName": "LibertiVault",
-            "selectors": {
-                "0x87515b90": {
-                    "erc20OfInterest": [],
-                    "method": "redeem",
-                    "plugin": "libertify"
-                }
-            }
-        },
-        {
-            "address": "0x2e8b86c0a19da13cf00818ca93edbfb08f0a831f",
-            "contractName": "LibertiVault",
-            "selectors": {
-		"0x3b086d4d": {
-                    "erc20OfInterest": [],
-                    "method": "depositEth",
-                    "plugin": "libertify"
-		}
-            }
-	},
-        {
-            "address": "0x96c8764260af62a2b2ce7d67564cb1766c6d9211",
-            "contractName": "LibertiVault",
-            "selectors": {
-		"0xd24febcd": {
-                    "erc20OfInterest": [],
-                    "method": "redeemEth",
-                    "plugin": "libertify"
-		}
-            }
-	}
-    ],
-    "name": "libertify"
+        "0xa2922622": {
+          "erc20OfInterest": ["dstToken"],
+          "method": "withdrawWithSymbolCheck",
+          "plugin": "libertify"
+        }
+      }
+    }
+  ],
+  "name": "libertify"
 }
